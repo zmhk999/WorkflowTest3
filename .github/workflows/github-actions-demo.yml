@@ -1,0 +1,29 @@
+name: Check Documentation
+
+on: [push]
+
+jobs:
+  check-docs:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Check required docs
+        shell: pwsh
+        run: |
+          $required = @(
+            "docs/ERD.png",
+            "docs/endpoint-plan.pdf",
+            "docs/RaceDayPOE.sql"
+          )
+
+          foreach ($file in $required) {
+            if (-not (Test-Path $file)) {
+              Write-Error "Missing required file: $file"
+              exit 1
+            }
+          }
+
+          Write-Host "All required documentation is present."
